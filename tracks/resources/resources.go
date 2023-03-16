@@ -43,7 +43,7 @@ func readTrack(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func readTracks(w http.ResponseWriter, _ *http.Request) {
+func listTracks(w http.ResponseWriter, _ *http.Request) {
 	if tracks, n := repository.ReadAll(); n > 0 {
 		w.WriteHeader(200) /* OK */
 		json.NewEncoder(w).Encode(tracks)
@@ -74,7 +74,7 @@ func Router() http.Handler {
 	/* Document */
 	r.HandleFunc("/tracks/{id}", readTrack).Methods("GET")
 
-	r.HandleFunc("/tracks", readTracks).Methods("GET")
+	r.HandleFunc("/tracks", listTracks).Methods("GET")
 
 	r.HandleFunc("/tracks/{id}", deleteTrack).Methods("DELETE")
 

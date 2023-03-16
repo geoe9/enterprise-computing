@@ -54,23 +54,23 @@ func Read(id string) (Track, int64) {
 	return Track{}, -1
 }
 
-func ReadAll() ([]Track, int64) {
-	const sql = "SELECT * FROM Tracks"
-	var tracks []Track
-	var t Track
+func ReadAll() ([]string, int64) {
+	const sql = "SELECT Id FROM Tracks"
+	var tracks []string
+	var t string
 	var num int64 = 0
 	if rows, err := repo.DB.Query(sql); err == nil {
 		for rows.Next() {
-			if err := rows.Scan(&t.Id, &t.Audio); err == nil {
+			if err := rows.Scan(t); err == nil {
 				tracks = append(tracks, t)
 				num++
 			} else {
-				return []Track{}, 0
+				return []string{}, 0
 			}
 		}
 		return tracks, num
 	}
-	return []Track{}, -1
+	return []string{}, -1
 }
 
 func Update(t Track) int64 {
