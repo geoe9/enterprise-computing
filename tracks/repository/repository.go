@@ -54,7 +54,7 @@ func Read(id string) (Track, int64) {
 	return Track{}, -1
 }
 
-func ReadAll() ([]string, int64) {
+func GetTrackList() ([]string, int64) {
 	const sql = "SELECT Id FROM Tracks"
 	tracks := []string{}
 	var t string
