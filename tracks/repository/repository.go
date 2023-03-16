@@ -56,16 +56,14 @@ func Read(id string) (Track, int64) {
 
 func ReadAll() ([]string, int64) {
 	const sql = "SELECT Id FROM Tracks"
-	var tracks []string
+	tracks := []string{}
 	var t string
 	var num int64 = 0
 	if rows, err := repo.DB.Query(sql); err == nil {
 		for rows.Next() {
-			if err := rows.Scan(t); err == nil {
+			if err := rows.Scan(&t); err == nil {
 				tracks = append(tracks, t)
 				num++
-			} else {
-				return []string{}, 0
 			}
 		}
 		return tracks, num

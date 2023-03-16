@@ -44,11 +44,9 @@ func readTrack(w http.ResponseWriter, r *http.Request) {
 }
 
 func listTracks(w http.ResponseWriter, _ *http.Request) {
-	if tracks, n := repository.ReadAll(); n > 0 {
+	if tracks, n := repository.ReadAll(); n >= 0 {
 		w.WriteHeader(200) /* OK */
 		json.NewEncoder(w).Encode(tracks)
-	} else if n == 0 {
-		w.WriteHeader(404) /* Not Found */
 	} else {
 		w.WriteHeader(500) /* Internal Server Error */
 	}
