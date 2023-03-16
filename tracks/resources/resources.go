@@ -43,11 +43,24 @@ func readTrack(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func readTracks(w http.ResponseWriter, _ *http.Request) {
+	if tracks, n := repository.ReadAll(); n > 0 {
+		w.WriteHeader(200) /* OK */
+		json.NewEncoder(w).Encode(tracks)
+	} else if n == 0 {
+		w.WriteHeader(404) /* Not Found */
+	} else {
+		w.WriteHeader(500) /* Internal Server Error */
+	}
+}
+
 func Router() http.Handler {
 	r := mux.NewRouter()
 	/* Store */
 	r.HandleFunc("/tracks/{id}", updateTrack).Methods("PUT")
 	/* Document */
 	r.HandleFunc("/tracks/{id}", readTrack).Methods("GET")
+
+	r.HandleFunc("/tracks", readTracks).Methods("GET")
 	return r
 }
