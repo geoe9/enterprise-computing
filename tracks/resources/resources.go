@@ -2,10 +2,8 @@ package resources
 
 import (
 	"encoding/json"
-	"enterprise-computing/tracks/evaluate"
 	"enterprise-computing/tracks/repository"
 	"net/http"
-	"strconv"
 
 	"github.com/gorilla/mux"
 )
@@ -35,8 +33,7 @@ func readTrack(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 	if t, n := repository.Read(id); n > 0 {
-		x := evaluate.Evaluate(t.Audio)
-		d := repository.Track{Id: t.Id, Audio: strconv.Itoa(x)}
+		d := repository.Track{Id: t.Id, Audio: t.Audio}
 		w.WriteHeader(200) /* OK */
 		json.NewEncoder(w).Encode(d)
 	} else if n == 0 {
