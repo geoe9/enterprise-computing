@@ -98,3 +98,16 @@ func Insert(t Track) int64 {
 	}
 	return -1
 }
+
+func Delete(id string) int64 {
+	const sql = "DELETE FROM Tracks WHERE Id = ?"
+	if stmt, err := repo.DB.Prepare(sql); err == nil {
+		defer stmt.Close()
+		if res, err := stmt.Exec(id); err == nil {
+			if n, err := res.RowsAffected(); err == nil {
+				return n
+			}
+		}
+	}
+	return -1
+}

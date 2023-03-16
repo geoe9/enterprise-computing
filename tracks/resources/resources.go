@@ -54,13 +54,29 @@ func readTracks(w http.ResponseWriter, _ *http.Request) {
 	}
 }
 
+func deleteTrack(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+	if n := repository.Delete(id); n > 0 {
+		w.WriteHeader(204) /* No Content */
+	} else if n == 0 {
+		w.WriteHeader(404) /* Not Found */
+	} else {
+		w.WriteHeader(500) /* Internal Server Error */
+	}
+}
+
 func Router() http.Handler {
 	r := mux.NewRouter()
+
 	/* Store */
 	r.HandleFunc("/tracks/{id}", updateTrack).Methods("PUT")
 	/* Document */
 	r.HandleFunc("/tracks/{id}", readTrack).Methods("GET")
 
 	r.HandleFunc("/tracks", readTracks).Methods("GET")
+
+	r.HandleFunc("/tracks/{id}", deleteTrack).Methods("DELETE")
+
 	return r
 }
