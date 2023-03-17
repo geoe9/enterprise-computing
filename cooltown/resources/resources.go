@@ -2,7 +2,6 @@ package resources
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/url"
 	"strings"
@@ -45,27 +44,21 @@ func searchTrack(w http.ResponseWriter, r *http.Request) {
 							json.NewEncoder(w).Encode(a)
 						} else {
 							w.WriteHeader(500) /* Internal Server Error */
-							fmt.Println("1" + err.Error())
 						}
 					} else {
 						w.WriteHeader(500) /* Internal Server Error */
-						fmt.Println("2" + err.Error())
 					}
 				} else {
 					w.WriteHeader(500) /* Internal Server Error */
-					fmt.Println("3" + err.Error())
 				}
 			} else {
 				w.WriteHeader(500) /* Internal Server Error */
-				fmt.Println("4" + err.Error())
 			}
 		} else {
 			w.WriteHeader(500) /* Internal Server Error */
-			fmt.Println("5" + err.Error())
 		}
 	} else {
 		w.WriteHeader(500) /* Internal Server Error */
-		fmt.Println("6" + err.Error())
 	}
 }
 

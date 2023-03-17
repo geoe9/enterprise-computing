@@ -8,7 +8,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-const API_TOKEN = "e279ea64f634ef35e7aa7adf4a97ec42" /* AUDD.IO API HERE PLEASE */
+const API_TOKEN = "" /* AUDD.IO API HERE PLEASE */
 
 type TrackAudio struct {
 	Audio string
