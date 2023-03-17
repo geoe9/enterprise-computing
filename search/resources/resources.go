@@ -10,7 +10,7 @@ import (
 
 const API_TOKEN = "e279ea64f634ef35e7aa7adf4a97ec42" /* AUDD.IO API HERE PLEASE */
 
-type AudioSnippet struct {
+type TrackAudio struct {
 	Audio string
 }
 
@@ -21,12 +21,12 @@ type APIResponse struct {
 	}
 }
 
-type SongTitle struct {
+type TrackTitle struct {
 	Id string
 }
 
 func searchTrack(w http.ResponseWriter, r *http.Request) {
-	var input AudioSnippet
+	var input TrackAudio
 	var apiRes APIResponse
 	if err := json.NewDecoder(r.Body).Decode(&input); err == nil {
 		data := url.Values{
@@ -39,7 +39,7 @@ func searchTrack(w http.ResponseWriter, r *http.Request) {
 				if apiRes.Status == "success" {
 					if apiRes.Result.Title != "" {
 						w.WriteHeader(200) /* OK */
-						json.NewEncoder(w).Encode(SongTitle{apiRes.Result.Title})
+						json.NewEncoder(w).Encode(TrackTitle{apiRes.Result.Title})
 					} else {
 						w.WriteHeader(404) /* Not Found */
 					}

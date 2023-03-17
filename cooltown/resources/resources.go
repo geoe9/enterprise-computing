@@ -15,7 +15,7 @@ type Track struct {
 	Audio string
 }
 
-type Audio struct {
+type TrackAudio struct {
 	Audio string
 }
 
@@ -24,6 +24,7 @@ func searchTrack(w http.ResponseWriter, r *http.Request) {
 	hc := http.Client{}
 	if req, err := http.NewRequest("POST", "http://127.0.0.1:3001/search", r.Body); err == nil {
 		if res, err := hc.Do(req); err == nil {
+			defer res.Body.Close()
 			if res.StatusCode != 200 {
 				w.WriteHeader(res.StatusCode)
 				return
@@ -32,13 +33,14 @@ func searchTrack(w http.ResponseWriter, r *http.Request) {
 				id := url.QueryEscape(strings.ReplaceAll(t.Id, " ", "+"))
 				if req, err := http.NewRequest("GET", "http://127.0.0.1:3000/tracks/"+id, nil); err == nil {
 					if res, err := hc.Do(req); err == nil {
+						defer res.Body.Close()
 						if res.StatusCode != 200 {
 							w.WriteHeader(res.StatusCode)
 							return
 						}
 						if err := json.NewDecoder(res.Body).Decode(&t); err == nil {
 							w.WriteHeader(200) /* OK */
-							var a Audio
+							var a TrackAudio
 							a.Audio = t.Audio
 							json.NewEncoder(w).Encode(a)
 						} else {

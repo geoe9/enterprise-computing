@@ -66,15 +66,9 @@ func deleteTrack(w http.ResponseWriter, r *http.Request) {
 
 func Router() http.Handler {
 	r := mux.NewRouter()
-
-	/* Store */
 	r.HandleFunc("/tracks/{id}", updateTrack).Methods("PUT")
-	/* Document */
 	r.HandleFunc("/tracks/{id}", readTrack).Methods("GET")
-
 	r.HandleFunc("/tracks", listTracks).Methods("GET")
-
 	r.HandleFunc("/tracks/{id}", deleteTrack).Methods("DELETE")
-
 	return r
 }
