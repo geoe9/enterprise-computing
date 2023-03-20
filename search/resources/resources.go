@@ -2,52 +2,34 @@ package resources
 
 import (
 	"encoding/json"
+	"enterprise-computing/search/service"
 	"net/http"
-	"net/url"
 
 	"github.com/gorilla/mux"
 )
 
-const API_TOKEN = "" /* AUDD.IO API HERE PLEASE */
-
-type TrackAudio struct {
+type Track struct {
+	Id    string
 	Audio string
 }
 
-type APIResponse struct {
-	Status string
-	Result struct {
-		Title string
-	}
-}
-
-type TrackTitle struct {
+type Response struct {
 	Id string
 }
 
-func searchTrack(w http.ResponseWriter, r *http.Request) {
-	var input TrackAudio
-	var apiRes APIResponse
-	if err := json.NewDecoder(r.Body).Decode(&input); err == nil {
-		data := url.Values{
-			"api_token": {API_TOKEN},
-			"audio":     {input.Audio},
-		}
-		if res, err := http.PostForm("https://api.audd.io/", data); err == nil {
-			defer res.Body.Close()
-			if err := json.NewDecoder(res.Body).Decode(&apiRes); err == nil {
-				if apiRes.Status == "success" {
-					if apiRes.Result.Title != "" {
-						w.WriteHeader(200) /* OK */
-						json.NewEncoder(w).Encode(TrackTitle{apiRes.Result.Title})
-					} else {
-						w.WriteHeader(404) /* Not Found */
-					}
+func SearchTrack(w http.ResponseWriter, r *http.Request) {
+	var t Track
+	if err := json.NewDecoder(r.Body).Decode(&t); err == nil {
+		if apiRes, err := service.IdentifyTrack(t.Audio); err == nil {
+			if apiRes.Status == "success" {
+				if apiRes.Result.Title != "" {
+					w.WriteHeader(200) /* OK */
+					json.NewEncoder(w).Encode(Response{Id: apiRes.Result.Title})
 				} else {
-					w.WriteHeader(400) /* Bad Request */
+					w.WriteHeader(404) /* Not Found */
 				}
 			} else {
-				w.WriteHeader(500) /* Internal Server Error */
+				w.WriteHeader(400) /* Bad Request */
 			}
 		} else {
 			w.WriteHeader(500) /* Internal Server Error */
@@ -59,6 +41,6 @@ func searchTrack(w http.ResponseWriter, r *http.Request) {
 
 func Router() http.Handler {
 	r := mux.NewRouter()
-	r.HandleFunc("/search", searchTrack).Methods("POST")
+	r.HandleFunc("/search", SearchTrack).Methods("POST")
 	return r
 }
