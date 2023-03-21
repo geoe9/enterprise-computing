@@ -14,11 +14,11 @@ type Track struct {
 	Audio string
 }
 
-type TrackAudio struct {
+type Response struct {
 	Audio string
 }
 
-func searchTrack(w http.ResponseWriter, r *http.Request) {
+func SearchTrack(w http.ResponseWriter, r *http.Request) {
 	var t Track
 	hc := http.Client{}
 	if req, err := http.NewRequest("POST", "http://127.0.0.1:3001/search", r.Body); err == nil {
@@ -39,9 +39,9 @@ func searchTrack(w http.ResponseWriter, r *http.Request) {
 						}
 						if err := json.NewDecoder(res.Body).Decode(&t); err == nil {
 							w.WriteHeader(200) /* OK */
-							var a TrackAudio
-							a.Audio = t.Audio
-							json.NewEncoder(w).Encode(a)
+							var res Response
+							res.Audio = t.Audio
+							json.NewEncoder(w).Encode(res)
 						} else {
 							w.WriteHeader(500) /* Internal Server Error */
 						}
@@ -64,6 +64,6 @@ func searchTrack(w http.ResponseWriter, r *http.Request) {
 
 func Router() http.Handler {
 	r := mux.NewRouter()
-	r.HandleFunc("/cooltown", searchTrack).Methods("POST")
+	r.HandleFunc("/cooltown", SearchTrack).Methods("POST")
 	return r
 }
